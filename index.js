@@ -1,7 +1,7 @@
 const ping = require('ping');
 
 const GOOGLE_HOST = 'google.com';
-const INTERVAL_MS = 5 * 60 * 1000;
+const INTERVAL_MS = 1 * 60 * 1000;
 const TIMEOUT_SECONDS = 30;
 const DURATION_MS = 8 * 60 * 60 * 1000;
 let numPings = 0;
