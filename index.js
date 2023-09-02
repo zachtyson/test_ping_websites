@@ -1,4 +1,5 @@
 const ping = require('ping');
+const fs = require('fs');
 
 const HOSTS = [
     'google.com',
@@ -15,8 +16,14 @@ const HOSTS = [
 const INTERVAL_MS = 1 * 60 * 1000;
 const TIMEOUT_SECONDS = 30;
 const DURATION_MS = 8 * 60 * 60 * 1000;
+const LOG_FILE = 'ping-log.txt';
 let numPings = 0;
 let currentIndex = 0;
+
+const logToFile = (message) => {
+    const timestampedMessage = `[${new Date().toISOString()}] ${message}\n`;
+    fs.appendFileSync(LOG_FILE, timestampedMessage);
+};
 
 const pingHost = async (host) => {
     try {
@@ -26,14 +33,22 @@ const pingHost = async (host) => {
         numPings++;
 
         if (!res.alive) {
-            console.log(`Failed to ping ${host} within ${TIMEOUT_SECONDS} seconds.`);
+            const errorMsg = `Failed to ping ${host} within ${TIMEOUT_SECONDS} seconds.`;
+            console.log(errorMsg);
+            logToFile(errorMsg);
         } else {
-            console.log(`Successfully pinged ${host}! Round-trip time: ${res.time}ms`);
+            const successMsg = `Successfully pinged ${host}! Round-trip time: ${res.time}ms`;
+            console.log(successMsg);
+            logToFile(successMsg);
         }
     } catch (error) {
-        console.error(`Error while pinging ${host}: ${error.message}`);
+        const errorMsg = `Error while pinging ${host}: ${error.message}`;
+        console.error(errorMsg);
+        logToFile(errorMsg);
     }
-    console.log(`Number of pings: ${numPings}`);
+    const pingMsg = `Number of pings: ${numPings}`;
+    console.log(pingMsg);
+    logToFile(pingMsg);
 };
 
 const pingNext = () => {
@@ -46,7 +61,11 @@ pingNext();
 
 // Terminate the program after 8 hours
 setTimeout(() => {
-    console.log("8 hours have passed. Exiting program.");
-    console.log(`Number of pings: ${numPings}`);
+    const exitMsg = "8 hours have passed. Exiting program.";
+    console.log(exitMsg);
+    logToFile(exitMsg);
+    const numPingsMsg = `Number of pings: ${numPings}`;
+    console.log(numPingsMsg);
+    logToFile(numPingsMsg);
     process.exit(0);
 }, DURATION_MS);
