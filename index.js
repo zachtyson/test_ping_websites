@@ -3,6 +3,7 @@ const ping = require('ping');
 const GOOGLE_HOST = 'google.com';
 const INTERVAL_MS = 5 * 60 * 1000;
 const TIMEOUT_SECONDS = 30;
+const DURATION_MS = 8 * 60 * 60 * 1000;
 let numPings = 0;
 
 const pingGoogle = async () => {
@@ -25,3 +26,9 @@ const pingGoogle = async () => {
 
 setInterval(pingGoogle, INTERVAL_MS);
 pingGoogle();
+
+// Terminate the program after 8 hours
+setTimeout(() => {
+    console.log("8 hours have passed. Exiting program.");
+    process.exit(0);
+}, DURATION_MS);
