@@ -1,31 +1,48 @@
 const ping = require('ping');
 
-const GOOGLE_HOST = 'google.com';
+const HOSTS = [
+    'google.com',
+    'yahoo.com',
+    'bing.com',
+    'duckduckgo.com',
+    'github.com',
+    'stackoverflow.com',
+    'amazon.com',
+    'reddit.com',
+    'wikipedia.org',
+    'microsoft.com'
+];
 const INTERVAL_MS = 1 * 60 * 1000;
 const TIMEOUT_SECONDS = 30;
 const DURATION_MS = 8 * 60 * 60 * 1000;
 let numPings = 0;
+let currentIndex = 0;
 
-const pingGoogle = async () => {
+const pingHost = async (host) => {
     try {
-        let res = await ping.promise.probe(GOOGLE_HOST, {
+        let res = await ping.promise.probe(host, {
             timeout: TIMEOUT_SECONDS
         });
         numPings++;
 
         if (!res.alive) {
-            console.log(`Failed to ping ${GOOGLE_HOST} within ${TIMEOUT_SECONDS} seconds.`);
+            console.log(`Failed to ping ${host} within ${TIMEOUT_SECONDS} seconds.`);
         } else {
-            console.log(`Successfully pinged ${GOOGLE_HOST}! Round-trip time: ${res.time}ms`);
+            console.log(`Successfully pinged ${host}! Round-trip time: ${res.time}ms`);
         }
     } catch (error) {
-        console.error(`Error while pinging ${GOOGLE_HOST}: ${error.message}`);
+        console.error(`Error while pinging ${host}: ${error.message}`);
     }
     console.log(`Number of pings: ${numPings}`);
 };
 
-setInterval(pingGoogle, INTERVAL_MS);
-pingGoogle();
+const pingNext = () => {
+    pingHost(HOSTS[currentIndex]);
+    currentIndex = (currentIndex + 1) % HOSTS.length;  // Rotate through the hosts
+};
+
+setInterval(pingNext, INTERVAL_MS);
+pingNext();
 
 // Terminate the program after 8 hours
 setTimeout(() => {
