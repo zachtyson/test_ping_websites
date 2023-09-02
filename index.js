@@ -30,5 +30,6 @@ pingGoogle();
 // Terminate the program after 8 hours
 setTimeout(() => {
     console.log("8 hours have passed. Exiting program.");
+    console.log(`Number of pings: ${numPings}`);
     process.exit(0);
 }, DURATION_MS);
